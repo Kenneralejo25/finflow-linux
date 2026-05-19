@@ -1,4 +1,98 @@
-# FinFlow — Guía de Despliegue en AWS EC2 (Linux Ubuntu)
+# FinFlow
+
+FinFlow es un panel de control financiero moderno y un planificador de ahorro. Este repositorio contiene el backend (Express) y el frontend (Vite + React) junto con una guía de despliegue en AWS EC2.
+
+## Contenido
+
+- **backend/** — API en Node.js (Express).
+- **frontend/** — Aplicación cliente (Vite + React).
+- **README.md** — Esta guía de despliegue y uso.
+
+## Índice
+
+- [Quick Start](#quick-start)
+- [Desarrollo](#desarrollo)
+- [Despliegue en AWS (resumen)](#despliegue-en-aws-resumen)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Licencia](#licencia)
+
+## Quick Start
+
+1. Instala dependencias del backend y frontend:
+
+```bash
+cd backend
+npm install
+
+cd ../frontend
+npm install
+```
+
+2. Ejecuta en modo desarrollo:
+
+```bash
+# Backend (puerto 5000)
+cd backend
+npm run dev || node server.js
+
+# Frontend (puerto 3000 por defecto de Vite)
+cd ../frontend
+npm run dev
+```
+
+3. Construir para producción:
+
+```bash
+cd frontend
+npm run build
+
+cd ../backend
+# Asegúrate de que backend sirva los estáticos de frontend/dist o usa Nginx (ver sección de despliegue)
+node server.js
+```
+
+## Desarrollo
+
+- Backend: revisa `backend/server.js` para configurar puertos y rutas API.
+- Frontend: `frontend/src` contiene los componentes React principales.
+
+## Despliegue en AWS (resumen)
+
+La guía completa de despliegue está más abajo en este documento y cubre:
+
+- Configuración de una instancia EC2 (Ubuntu 22.04).
+- Instalación de Node.js, Nginx y PM2.
+- Configuración de Nginx como reverse proxy y para servir los archivos estáticos.
+- Uso de Certbot para HTTPS.
+
+En resumen, los pasos son:
+
+1. Provisionar una EC2 (Ubuntu 22.04) y abrir puertos 22, 80, 443.
+2. Instalar Node.js, Git y dependencias.
+3. Clonar el repo, instalar dependencias y compilar el frontend.
+4. Configurar Nginx para servir `frontend/dist` y proxy a `localhost:5000` para `/api`.
+5. Ejecutar el backend con PM2 y habilitar el inicio automático.
+
+## Estructura del proyecto
+
+```
+finflow-linux/
+├─ backend/
+│  ├─ server.js
+│  └─ package.json
+├─ frontend/
+│  ├─ src/
+│  └─ package.json
+└─ README.md
+```
+
+## Licencia
+
+Este proyecto no tiene licencia especificada. Si quieres, puedo añadir una `LICENSE` (por ejemplo MIT).
+
+---
+
+## Guía de despliegue en AWS EC2 (Linux Ubuntu)
 
 FinFlow es un panel de control financiero moderno y planificador de ahorro. Esta guía te orientará en el despliegue del proyecto en una instancia de **AWS EC2 con Linux Ubuntu Server 22.04 LTS (Apto para Free Tier)**.
 
@@ -89,7 +183,7 @@ npm -v
 4. **Configurar el Backend para Servir el Frontend compilado**:
    Para simplificar el despliegue y no requerir múltiples puertos, configuraremos la API de Express para servir la carpeta `dist` de React directamente.
    Asegúrate de que tu `backend/server.js` sirva los archivos estáticos de producción. 
-   *(El código provisto por defecto ya está configurado para ejecutarse en modo desacoplado con Nginx, pero a continuación configuramos Nginx para que sirva los estáticos directamente, lo cual es la mejor práctica de rendimiento).*
+   *(El código provisto por defecto ya está configurado para ejecutarse en modo desacoplado con Nginx, pero a continuación configuramos Nginx para que sirva los estáticos directamente, lo cual es la mejor práctica de rendimiento).* 
 
 ---
 
@@ -162,7 +256,7 @@ Para asegurarnos de que el servidor Express siga ejecutándose si cerramos la te
    pm2 save
    pm2 startup systemd
    ```
-   *(Copia y ejecuta el comando que imprima en consola para finalizar el enlace de PM2 con systemd).*
+   *(Copia y ejecuta el comando que imprima en consola para finalizar el enlace de PM2 con systemd).* 
 
 ---
 
